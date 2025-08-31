@@ -1,4 +1,8 @@
 package DeckOfCards;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.util.Objects;
 
 /**
  * Write a description of class Carta here.
@@ -53,15 +57,15 @@ public abstract class Carta implements Comparable<Carta> {
     }
     public String toString() {
         if (!faceup) {
-            return "@";
+            return "back";
         }
         return switch (valor) {
-            case 14 -> "A" + palo.getFigura();
-            case 11 -> "J"+ palo.getFigura();
-            case 12 -> "Q" + palo.getFigura();
-            case 13 -> "K" + palo.getFigura();
+            case 14 -> "A" + palo.getCodigo();
+            case 11 -> "J"+ palo.getCodigo();
+            case 12 -> "Q" + palo.getCodigo();
+            case 13 -> "K" + palo.getCodigo();
             case 15-> "Joker";
-            default -> ""+ valor + palo.getFigura();
+            default -> valor + palo.getCodigo();
         };
     }
 
@@ -80,6 +84,20 @@ public abstract class Carta implements Comparable<Carta> {
             return true;
         }
         return false;
+    }
+
+    public ImageView getImageView(){
+     String rutaCarta;
+     if (!isFaceup()) {
+         rutaCarta = "CaraAbajo.png";
+     } else {
+         rutaCarta = toString() + ".png";
+     }
+     Image imagen = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cartas/" + rutaCarta)));
+     ImageView imageView = new ImageView(imagen);
+     imageView.setFitWidth(80);
+     imageView.setPreserveRatio(true);
+     return imageView;
     }
 
     public int getValor() {
