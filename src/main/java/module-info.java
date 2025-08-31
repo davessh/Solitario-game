@@ -13,6 +13,6 @@ module com.example.interfazjuegosolitario {
 
     opens com.example.interfazjuegosolitario to javafx.fxml;
     exports com.example.interfazjuegosolitario;
-    opens solitaire to javafx.graphics;   // 👈 agrega esto
+    opens solitaire to javafx.graphics;
     exports solitaire;
 }
