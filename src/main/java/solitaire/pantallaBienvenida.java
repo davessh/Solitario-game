@@ -31,7 +31,7 @@ public class pantallaBienvenida extends Application {
 
 
         BackgroundImage fondo = new BackgroundImage(
-                new Image("C:\\Users\\Usuario\\IdeaProjects\\prueba\\src\\main\\SOLITARIO.png", 1920, 1080, false, true),
+                new Image("C:\\Users\\GF76\\IdeaProjects\\interfazJuegoSolitario\\src\\main\\java\\fondoBienvenida.png", 1920, 1080, false, true),
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER,
