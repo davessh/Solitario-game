@@ -55,6 +55,7 @@ public abstract class Carta implements Comparable<Carta> {
     public boolean isFaceup() {
         return faceup;
     }
+
     public String toString() {
         if (!faceup) {
             return "back";

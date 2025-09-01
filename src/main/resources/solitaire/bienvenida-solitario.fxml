@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="interfaz.SolitaireBienvenidaController">
+    <AnchorPane prefHeight="977.0" prefWidth="1739.0">
+        <children>
+            <!-- Imagen de fondo -->
+            <ImageView fx:id="backgroundImage" fitHeight="977.0" fitWidth="1739.0"
+                       pickOnBounds="true" preserveRatio="true">
+                <Image url="@fondoBienvenida.png" />
+            </ImageView>
+
+            <!-- Botones -->
+            <Button fx:id="btnJugar" layoutX="559.0" layoutY="508.0" prefHeight="123.0"
+                    prefWidth="265.0" style="-fx-background-color: #636c62; -fx-text-fill: white; -fx-background-radius: 10;"
+                    text="JUGAR" onAction="#handleJugarAction">
+                <font>
+                    <Font name="BOA CONSTRUKTOR Bold" size="55.0" />
+                </font>
+                <cursor>
+                    <Cursor fx:constant="HAND" />
+                </cursor>
+                <effect>
+                    <Glow level="0.25" />
+                </effect>
+            </Button>
+
+            <Button fx:id="btnSalir" layoutX="875.0" layoutY="507.0" prefHeight="123.0"
+                    prefWidth="265.0" style="-fx-background-color: #636c62; -fx-text-fill: white; -fx-background-radius: 10;"
+                    text="SALIR" onAction="#handleSalirAction">
+                <font>
+                    <Font name="BOA CONSTRUKTOR Bold" size="55.0" />
+                </font>
+                <cursor>
+                    <Cursor fx:constant="HAND" />
+                </cursor>
+                <effect>
+                    <Glow level="0.25" />
+                </effect>
+            </Button>
+        </children>
+    </AnchorPane>
+</StackPane>

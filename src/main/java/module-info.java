@@ -10,9 +10,10 @@ module com.example.interfazjuegosolitario {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
-
+    exports interfaz;
+    opens solitaire to javafx.fxml;
     opens com.example.interfazjuegosolitario to javafx.fxml;
     exports com.example.interfazjuegosolitario;
-    opens solitaire to javafx.graphics;
     exports solitaire;
+    opens interfaz to javafx.graphics;
 }
