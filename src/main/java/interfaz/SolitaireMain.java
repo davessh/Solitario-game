@@ -18,7 +18,7 @@ public class SolitaireMain extends Application {
         Scene scene = new Scene(root);
         primaryStage.setTitle("Solitaire - Bienvenida");
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false); // Opcional: si no quieres que sea redimensionable
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
