@@ -7,23 +7,18 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="interfaz.SolitaireBienvenidaController">
+<StackPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="interfaz.SolitaireBienvenidaController">
     <AnchorPane prefHeight="977.0" prefWidth="1739.0">
         <children>
-            <!-- Imagen de fondo -->
-            <ImageView fx:id="backgroundImage" fitHeight="977.0" fitWidth="1739.0"
-                       pickOnBounds="true" preserveRatio="true">
+
+            <ImageView fx:id="backgroundImage" fitHeight="977.0" fitWidth="1739.0" pickOnBounds="true" preserveRatio="true">
                 <Image url="@fondoBienvenida.png" />
             </ImageView>
 
             <!-- Botones -->
-            <Button fx:id="btnJugar" layoutX="559.0" layoutY="508.0" prefHeight="123.0"
-                    prefWidth="265.0" style="-fx-background-color: #636c62; -fx-text-fill: white; -fx-background-radius: 10;"
-                    text="JUGAR" onAction="#handleJugarAction">
+            <Button fx:id="btnJugar" layoutX="559.0" layoutY="508.0" onAction="#handleJugarAction" prefHeight="123.0" prefWidth="265.0" style="-fx-background-color: #636c62; -fx-text-fill: white; -fx-background-radius: 10;" text="JUGAR" textFill="#ff2b2b">
                 <font>
                     <Font name="BOA CONSTRUKTOR Bold" size="55.0" />
                 </font>
@@ -35,9 +30,7 @@
                 </effect>
             </Button>
 
-            <Button fx:id="btnSalir" layoutX="875.0" layoutY="507.0" prefHeight="123.0"
-                    prefWidth="265.0" style="-fx-background-color: #636c62; -fx-text-fill: white; -fx-background-radius: 10;"
-                    text="SALIR" onAction="#handleSalirAction">
+            <Button fx:id="btnSalir" layoutX="875.0" layoutY="507.0" onAction="#handleSalirAction" prefHeight="123.0" prefWidth="265.0" style="-fx-background-color: #636c62; -fx-text-fill: white; -fx-background-radius: 10;" text="SALIR">
                 <font>
                     <Font name="BOA CONSTRUKTOR Bold" size="55.0" />
                 </font>

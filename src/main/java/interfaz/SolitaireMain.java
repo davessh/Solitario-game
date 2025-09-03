@@ -10,11 +10,9 @@ public class SolitaireMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Cargar el FXML
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/solitaire/bienvenida-solitario.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaz/bienvenida-solitario.fxml"));
         Parent root = loader.load();
 
-        // Configurar la escena
         Scene scene = new Scene(root);
         primaryStage.setTitle("Solitaire - Bienvenida");
         primaryStage.setScene(scene);

@@ -23,7 +23,7 @@ public class SolitaireBienvenidaController {
     @FXML
     private void handleJugarAction() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaz/SolitaireJuego.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaz/tableroSolitario.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) btnJugar.getScene().getWindow();
