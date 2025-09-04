@@ -28,6 +28,7 @@ public class SolitaireBienvenidaController {
 
             Stage stage = (Stage) btnJugar.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("Solitaire - Juego");
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
