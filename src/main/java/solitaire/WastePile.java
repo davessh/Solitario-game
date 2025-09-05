@@ -25,12 +25,10 @@ public class WastePile {
     public ArrayList<CartaInglesa> emptyPile() {
         ArrayList<CartaInglesa> pile = new ArrayList<>();
         if (!cartas.isEmpty()) {
-            // Invertir el orden para que cuando se recargue el draw pile,
-            // las cartas estén en el orden correcto
             for (int i = cartas.size() - 1; i >= 0; i--) {
                 pile.add(cartas.get(i));
             }
-            cartas.clear(); // Usar clear() en lugar de crear nueva lista
+            cartas.clear(); // se limpia con un clear
         }
         return pile;
     }

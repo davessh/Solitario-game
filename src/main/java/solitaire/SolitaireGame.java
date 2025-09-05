@@ -134,7 +134,6 @@ public class SolitaireGame {
 
         CartaInglesa carta = wastePile.verCarta();
         if (moveCartaToTableau(carta, tableau)) {
-            // si es movimiento válido, elimina la carta de la pila
             carta = wastePile.getCarta();
             movimientoRealizado = true;
         }
@@ -151,7 +150,6 @@ public class SolitaireGame {
 
         CartaInglesa carta = wastePile.verCarta();
         if (moveCartaToFoundation(carta)) {
-            // si es movimiento válido, elimina la carta de la pila
             carta = wastePile.getCarta();
             movimientoRealizado = true;
         }

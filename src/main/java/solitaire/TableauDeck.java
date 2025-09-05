@@ -113,8 +113,6 @@ public class TableauDeck {
         if (!cartas.isEmpty()) {
             ultimaCarta = cartas.getLast();
             cartas.remove(ultimaCarta);
-
-            // CAMBIO AQUÍ: Solo voltear si existe la carta Y está face down
             if (!cartas.isEmpty()) {
                 CartaInglesa siguienteCarta = cartas.getLast();
                 if (!siguienteCarta.isFaceup()) {
@@ -150,9 +148,7 @@ public class TableauDeck {
 
         if (!cartasRecibidas.isEmpty()) {
             CartaInglesa primera = cartasRecibidas.getFirst();
-            // si la primera carta del bloque recibido se puede agregar al tableau actual
             if (sePuedeAgregarCarta(primera)) {
-                // se agrega todo el bloque
                 cartas.addAll(cartasRecibidas);
                 resultado = true;
             }
@@ -185,7 +181,6 @@ public class TableauDeck {
                 }
             }
         } else {
-            // Está vacio el tableau, solo se puede agregar la cara si es rey
             if (cartaInicialDePrueba.getValor() == 13) {
                 resultado = true;
             }

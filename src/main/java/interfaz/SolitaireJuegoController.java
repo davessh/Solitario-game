@@ -507,7 +507,6 @@ public class SolitaireJuegoController {
 
     private Label crearLabelCartaReverso() {
         Label label = new Label("🂠");
-        // Aumentar el tamaño del reverso
         label.setStyle("-fx-font-size: 48px; -fx-text-fill: #4169E1; -fx-background-color: #4169E1; " +  // Aumentado de 40px a 48px
                 "-fx-border-color: #000080; -fx-border-width: 2; -fx-padding: 8 12; " +  // Aumentado padding
                 "-fx-background-radius: 10; -fx-border-radius: 10; " +

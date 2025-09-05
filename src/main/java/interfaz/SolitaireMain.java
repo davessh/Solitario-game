@@ -16,19 +16,16 @@ public class SolitaireMain extends Application {
 
         Scene scene = new Scene(root, 1200, 800);
 
-        // Configurar la ventana principal
-        primaryStage.setTitle("Solitario Klondike");
+        primaryStage.setTitle("Juego Solitario");
         primaryStage.setScene(scene);
         primaryStage.setResizable(true);
-
-        // Establecer tamaños mínimos para la ventana de bienvenida
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
 
 
         primaryStage.centerOnScreen();
         try {
-            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/interfaz/icon.png")));
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("interfaz/trebol.png")));
         } catch (Exception e) {
         }
 

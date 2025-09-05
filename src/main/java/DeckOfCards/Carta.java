@@ -87,19 +87,19 @@ public abstract class Carta implements Comparable<Carta> {
         return false;
     }
 
-    public ImageView getImageView(){
-     String rutaCarta;
-     if (!isFaceup()) {
-         rutaCarta = "CaraAbajo.png";
-     } else {
-         rutaCarta = toString() + ".png";
-     }
-     Image imagen = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cartas/" + rutaCarta)));
-     ImageView imageView = new ImageView(imagen);
-     imageView.setFitWidth(80);
-     imageView.setPreserveRatio(true);
-     return imageView;
-    }
+//    public ImageView getImageView(){
+//     String rutaCarta;
+//     if (!isFaceup()) {
+//         rutaCarta = "CaraAbajo.png";
+//     } else {
+//         rutaCarta = toString() + ".png";
+//     }
+//     Image imagen = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cartas/" + rutaCarta)));
+//     ImageView imageView = new ImageView(imagen);
+//     imageView.setFitWidth(80);
+//     imageView.setPreserveRatio(true);
+//     return imageView;
+//    }
 
     public int getValor() {
         return valor;
