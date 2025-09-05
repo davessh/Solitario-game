@@ -30,7 +30,6 @@ public class SolitaireMain extends Application {
         try {
             primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/interfaz/icon.png")));
         } catch (Exception e) {
-            // Ignorar si no se encuentra el icono
         }
 
         primaryStage.show();

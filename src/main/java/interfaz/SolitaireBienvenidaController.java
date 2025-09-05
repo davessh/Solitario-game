@@ -76,9 +76,7 @@ public class SolitaireBienvenidaController {
             stage.setScene(scene);
             stage.setTitle("Solitaire Klondike");
 
-            // Hacer que la ventana sea redimensionable y maximizada
             stage.setResizable(true);
-            stage.setMaximized(true);
 
             // Establecer tamaños mínimos
             stage.setMinWidth(1000);

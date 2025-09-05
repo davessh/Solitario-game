@@ -21,7 +21,7 @@
                                                    -fx-border-color: #4a7c59;
                                                    -fx-border-width: 2;">
             <children>
-                <Label text="Solitario Klondike" textFill="WHITE" style="-fx-font-weight: bold;">
+                <Label text="Solitario" textFill="WHITE" style="-fx-font-weight: bold;">
                     <font>
                         <Font name="Arial Bold" size="28.0" />
                     </font>
@@ -53,7 +53,6 @@
             </VBox.margin>
         </HBox>
 
-        <!-- Área superior: Draw pile, Waste pile y Foundations -->
         <HBox spacing="20.0" alignment="CENTER_LEFT" style="-fx-padding: 0 20 0 20;">
             <children>
                 <!-- Draw pile y Waste pile -->
@@ -61,7 +60,7 @@
                     <children>
                         <Label text="Stock" textFill="WHITE" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
                         <Pane fx:id="drawPilePane" onMouseClicked="#handleDrawPileClick"
-                              prefHeight="120.0" prefWidth="85.0"
+                              prefHeight="140.0" prefWidth="100.0"
                               style="-fx-background-color: #1a5c1a;
                                      -fx-border-color: #4a7c59;
                                      -fx-border-width: 3;
@@ -78,7 +77,7 @@
                 <VBox spacing="15.0">
                     <children>
                         <Label text="Waste" textFill="WHITE" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
-                        <Pane fx:id="wastePilePane" prefHeight="120.0" prefWidth="85.0"
+                        <Pane fx:id="wastePilePane" prefHeight="140.0" prefWidth="100.0"
                               style="-fx-background-color: #1a5c1a;
                                      -fx-border-color: #4a7c59;
                                      -fx-border-width: 3;

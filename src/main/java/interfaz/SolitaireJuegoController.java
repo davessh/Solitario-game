@@ -325,21 +325,20 @@ public class SolitaireJuegoController {
             lblEstado.setStyle(lblEstado.getStyle() + "-fx-text-fill: #00FF00;");
         }
     }
-
     private void actualizarDrawPile() {
         drawPilePane.getChildren().clear();
 
         if (solitaireGame.getDrawPile().hayCartas()) {
-            Label cartaLabel = new Label("🂠");
-            cartaLabel.setStyle("-fx-font-size: 48px; -fx-text-fill: #4169E1; -fx-alignment: center;");
-            cartaLabel.setLayoutX(18);
-            cartaLabel.setLayoutY(35);
+            Label cartaLabel = new Label("🂠"); // Este es el icono de reverso del stock
+            cartaLabel.setStyle("-fx-font-size: 120px; -fx-text-fill: #4169E1; -fx-alignment: center;"); // Aumenta el tamaño aquí
+            cartaLabel.setLayoutX(10); // Ajusta la posición X para centrar
+            cartaLabel.setLayoutY(-15); // Ajusta la posición Y para centrar
             drawPilePane.getChildren().add(cartaLabel);
         } else {
-            Label recargaLabel = new Label("↻");
-            recargaLabel.setStyle("-fx-font-size: 40px; -fx-text-fill: #FFD700; -fx-alignment: center; -fx-font-weight: bold;");
+            Label recargaLabel = new Label("↻"); // Icono de recarga cuando no hay cartas
+            recargaLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: #FFD700; -fx-alignment: center; -fx-font-weight: bold;");
             recargaLabel.setLayoutX(25);
-            recargaLabel.setLayoutY(40);
+            recargaLabel.setLayoutY(35);
             drawPilePane.getChildren().add(recargaLabel);
         }
     }
@@ -462,10 +461,11 @@ public class SolitaireJuegoController {
         String simbolo = obtenerSimboloCarta(carta);
         Label label = new Label(simbolo);
 
-        String baseStyle = "-fx-font-size: 14px; -fx-background-color: white; " +
-                "-fx-border-color: #333333; -fx-border-width: 2; -fx-padding: 5 8; " +
-                "-fx-background-radius: 8; -fx-border-radius: 8; " +
-                "-fx-min-width: 65; -fx-min-height: 90; -fx-alignment: center; " +
+        // Aumentar el tamaño de la carta
+        String baseStyle = "-fx-font-size: 20px; -fx-background-color: white; " +  // Aumentado de 14px a 20px
+                "-fx-border-color: #333333; -fx-border-width: 2; -fx-padding: 8 12; " +  // Aumentado padding
+                "-fx-background-radius: 10; -fx-border-radius: 10; " +
+                "-fx-min-width: 80; -fx-min-height: 110; -fx-alignment: center; " +  // Aumentado tamaño
                 "-fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0.5, 1, 1);";
 
         if (carta.getColor().equals("rojo")) {
@@ -479,10 +479,11 @@ public class SolitaireJuegoController {
 
     private Label crearLabelCartaReverso() {
         Label label = new Label("🂠");
-        label.setStyle("-fx-font-size: 40px; -fx-text-fill: #4169E1; -fx-background-color: #4169E1; " +
-                "-fx-border-color: #000080; -fx-border-width: 2; -fx-padding: 5 8; " +
-                "-fx-background-radius: 8; -fx-border-radius: 8; " +
-                "-fx-min-width: 65; -fx-min-height: 90; -fx-alignment: center; " +
+        // Aumentar el tamaño del reverso
+        label.setStyle("-fx-font-size: 48px; -fx-text-fill: #4169E1; -fx-background-color: #4169E1; " +  // Aumentado de 40px a 48px
+                "-fx-border-color: #000080; -fx-border-width: 2; -fx-padding: 8 12; " +  // Aumentado padding
+                "-fx-background-radius: 10; -fx-border-radius: 10; " +
+                "-fx-min-width: 80; -fx-min-height: 110; -fx-alignment: center; " +  // Aumentado tamaño
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0.5, 1, 1);");
         return label;
     }
