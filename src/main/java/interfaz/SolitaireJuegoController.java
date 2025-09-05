@@ -23,25 +23,43 @@ import java.util.ArrayList;
 
 public class SolitaireJuegoController {
 
-    @FXML private Button btnNuevoJuego;
-    @FXML private Button btnMenu;
-    @FXML private Pane drawPilePane;
-    @FXML private Pane wastePilePane;
+    @FXML
+    private Button btnNuevoJuego;
+    @FXML
+    private Button btnMenu;
+    @FXML
+    private Pane drawPilePane;
+    @FXML
+    private Pane wastePilePane;
 
-    @FXML private Pane foundationSpades;
-    @FXML private Pane foundationHearts;
-    @FXML private Pane foundationDiamonds;
-    @FXML private Pane foundationClubs;
-    @FXML private Pane tableau1;
-    @FXML private Pane tableau2;
-    @FXML private Pane tableau3;
-    @FXML private Pane tableau4;
-    @FXML private Pane tableau5;
-    @FXML private Pane tableau6;
-    @FXML private Pane tableau7;
-    @FXML private Label lblEstado;
-    @FXML private Label lblMovimientos;
-    @FXML private Label lblTiempo;
+    @FXML
+    private Pane foundationSpades;
+    @FXML
+    private Pane foundationHearts;
+    @FXML
+    private Pane foundationDiamonds;
+    @FXML
+    private Pane foundationClubs;
+    @FXML
+    private Pane tableau1;
+    @FXML
+    private Pane tableau2;
+    @FXML
+    private Pane tableau3;
+    @FXML
+    private Pane tableau4;
+    @FXML
+    private Pane tableau5;
+    @FXML
+    private Pane tableau6;
+    @FXML
+    private Pane tableau7;
+    @FXML
+    private Label lblEstado;
+    @FXML
+    private Label lblMovimientos;
+    @FXML
+    private Label lblTiempo;
     private SolitaireGame solitaireGame;
     private ArrayList<Pane> tableauxPanes;
     private ArrayList<Pane> foundationPanes;
@@ -148,17 +166,9 @@ public class SolitaireJuegoController {
     }
 
     private void configurarWastePile() {
-        wastePilePane.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2) {
-                if (solitaireGame.moveWasteToFoundation()) {
-                    movimientos++;
-                    actualizarInterfaz();
-                    lblMovimientos.setText("Movimientos: " + movimientos);
-                    verificarVictoria();
-                }
-            }
-        });
+        // ELIMINAR completamente el doble-click, solo drag
 
+        // Configurar drag desde waste pile
         wastePilePane.setOnDragDetected(e -> {
             CartaInglesa carta = solitaireGame.getWastePile().verCarta();
             if (carta != null) {
@@ -173,17 +183,6 @@ public class SolitaireJuegoController {
     }
 
     private void configurarTableau(Pane tableau, int index) {
-        tableau.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2) {
-                if (solitaireGame.moveTableauToFoundation(index + 1)) {
-                    movimientos++;
-                    actualizarInterfaz();
-                    lblMovimientos.setText("Movimientos: " + movimientos);
-                    verificarVictoria();
-                }
-            }
-        });
-
         tableau.setOnDragOver(e -> {
             if (e.getGestureSource() != tableau && e.getDragboard().hasString()) {
                 e.acceptTransferModes(TransferMode.MOVE);
@@ -231,7 +230,6 @@ public class SolitaireJuegoController {
     }
 
     private void configurarFoundation(Pane foundation, int index) {
-        // Configurar como destino de drop
         foundation.setOnDragOver(e -> {
             if (e.getDragboard().hasString()) {
                 e.acceptTransferModes(TransferMode.MOVE);
@@ -241,13 +239,19 @@ public class SolitaireJuegoController {
 
         foundation.setOnDragEntered(e -> {
             if (e.getDragboard().hasString()) {
-                foundation.setEffect(new Glow(0.8));
+                Glow glow = new Glow(0.8);
+                foundation.setEffect(glow);
+                String currentStyle = foundation.getStyle();
+                foundation.setStyle(currentStyle + "-fx-border-color: #FFD700; -fx-border-width: 4;");
             }
             e.consume();
         });
 
         foundation.setOnDragExited(e -> {
             foundation.setEffect(null);
+            // Restaurar estilo original
+            String currentStyle = foundation.getStyle();
+            foundation.setStyle(currentStyle.replaceAll("-fx-border-color: #FFD700; -fx-border-width: 4;", ""));
             e.consume();
         });
 
@@ -274,6 +278,9 @@ public class SolitaireJuegoController {
             }
 
             foundation.setEffect(null);
+            // Restaurar estilo original
+            String currentStyle = foundation.getStyle();
+            foundation.setStyle(currentStyle.replaceAll("-fx-border-color: #FFD700; -fx-border-width: 4;", ""));
             e.setDropCompleted(success);
             e.consume();
         });
@@ -295,6 +302,7 @@ public class SolitaireJuegoController {
             lblEstado.setStyle(lblEstado.getStyle() + "-fx-text-fill: #00FF00;");
         }
     }
+
     private void actualizarDrawPile() {
         drawPilePane.getChildren().clear();
 
@@ -385,22 +393,12 @@ public class SolitaireJuegoController {
     }
 
     private void configurarEventosCarta(Label cartaLabel, CartaInglesa carta, int tableauIndex, int cardIndex) {
-        TableauDeck tableau = solitaireGame.getTableau().get(tableauIndex);
-        ArrayList<CartaInglesa> cartas = tableau.getCards();
-        boolean esCartaSuperior = (cardIndex == cartas.size() - 1);
-
-        cartaLabel.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2 && carta.isFaceup() && esCartaSuperior) {
-                if (solitaireGame.moveTableauToFoundation(tableauIndex + 1)) {
-                    movimientos++;
-                    actualizarInterfaz();
-                    lblMovimientos.setText("Movimientos: " + movimientos);
-                    verificarVictoria();
-                }
-            }
-        });
-
+        // SOLO efectos visuales, SIN doble-click
         cartaLabel.setOnMouseEntered(e -> {
+            TableauDeck tableau = solitaireGame.getTableau().get(tableauIndex);
+            ArrayList<CartaInglesa> cartas = tableau.getCards();
+            boolean esCartaSuperior = (cardIndex == cartas.size() - 1);
+
             if (carta.isFaceup() && esCartaSuperior) {
                 cartaLabel.setEffect(new Glow(0.3));
             }
@@ -410,6 +408,7 @@ public class SolitaireJuegoController {
             cartaLabel.setEffect(null);
         });
     }
+
     private void actualizarFoundations() {
         ArrayList<FoundationDeck> foundations = solitaireGame.getFoundations();
 
@@ -432,29 +431,47 @@ public class SolitaireJuegoController {
     private Label crearLabelCarta(CartaInglesa carta) {
         String valor;
         switch (carta.getValor()) {
-            case 14: valor = "A"; break;
-            case 11: valor = "J"; break;
-            case 12: valor = "Q"; break;
-            case 13: valor = "K"; break;
-            default: valor = String.valueOf(carta.getValor());
+            case 14:
+                valor = "A";
+                break;
+            case 11:
+                valor = "J";
+                break;
+            case 12:
+                valor = "Q";
+                break;
+            case 13:
+                valor = "K";
+                break;
+            default:
+                valor = String.valueOf(carta.getValor());
         }
 
         String palo;
         switch (carta.getPalo()) {
-            case PICA: palo = "♠"; break;
-            case CORAZON: palo = "♥"; break;
-            case DIAMANTE: palo = "♦"; break;
-            case TREBOL: palo = "♣"; break;
-            default: palo = "?";
+            case PICA:
+                palo = "♠";
+                break;
+            case CORAZON:
+                palo = "♥";
+                break;
+            case DIAMANTE:
+                palo = "♦";
+                break;
+            case TREBOL:
+                palo = "♣";
+                break;
+            default:
+                palo = "?";
         }
 
-        // Crear un StackPane para mejor control del layout
+        // StackPane control de layout
         javafx.scene.layout.StackPane stackPane = new javafx.scene.layout.StackPane();
         stackPane.setMinSize(80, 110);
         stackPane.setMaxSize(80, 110);
         stackPane.setPrefSize(80, 110);
 
-        // Fondo de la carta
+        //Carta grafica (fondo)
         String backgroundColor = carta.getColor().equals("rojo") ? "white" : "white";
         String textColor = carta.getColor().equals("rojo") ? "#DC143C" : "#000000";
 
@@ -463,29 +480,24 @@ public class SolitaireJuegoController {
                 "-fx-background-radius: 8; -fx-border-radius: 8; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0.5, 1, 1);");
 
-        // Valor en esquina superior derecha
         Label valorSuperior = new Label(valor);
         valorSuperior.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
         javafx.scene.layout.StackPane.setAlignment(valorSuperior, javafx.geometry.Pos.TOP_RIGHT);
         javafx.geometry.Insets marginSuperior = new javafx.geometry.Insets(5, 5, 0, 0);
         javafx.scene.layout.StackPane.setMargin(valorSuperior, marginSuperior);
 
-        // Palo en el centro (más grande)
         Label paloCentro = new Label(palo);
         paloCentro.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
         javafx.scene.layout.StackPane.setAlignment(paloCentro, javafx.geometry.Pos.CENTER);
 
-        // Valor en esquina inferior izquierda (rotado 180 grados)
         Label valorInferior = new Label(valor);
         valorInferior.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: " + textColor + "; -fx-rotate: 180;");
         javafx.scene.layout.StackPane.setAlignment(valorInferior, javafx.geometry.Pos.BOTTOM_LEFT);
         javafx.geometry.Insets marginInferior = new javafx.geometry.Insets(0, 0, 5, 5);
         javafx.scene.layout.StackPane.setMargin(valorInferior, marginInferior);
 
-        // Agregar todos los elementos al StackPane
         stackPane.getChildren().addAll(valorSuperior, paloCentro, valorInferior);
 
-        // Crear un Label contenedor para retornar (mantener compatibilidad)
         Label labelContenedor = new Label();
         labelContenedor.setGraphic(stackPane);
         labelContenedor.setStyle("-fx-padding: 0;");
@@ -502,27 +514,5 @@ public class SolitaireJuegoController {
                 "-fx-min-width: 80; -fx-min-height: 110; -fx-alignment: center; " +  // Aumentado tamaño
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0.5, 1, 1);");
         return label;
-    }
-
-    private String obtenerSimboloCarta(CartaInglesa carta) {
-        String valor;
-        switch (carta.getValor()) {
-            case 14: valor = "A"; break;
-            case 11: valor = "J"; break;
-            case 12: valor = "Q"; break;
-            case 13: valor = "K"; break;
-            default: valor = String.valueOf(carta.getValor());
-        }
-
-        String palo;
-        switch (carta.getPalo()) {
-            case PICA: palo = "♠"; break;
-            case CORAZON: palo = "♥"; break;
-            case DIAMANTE: palo = "♦"; break;
-            case TREBOL: palo = "♣"; break;
-            default: palo = "?";
-        }
-
-        return valor + "\n" + palo;
     }
 }

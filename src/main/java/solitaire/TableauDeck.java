@@ -114,7 +114,7 @@ public class TableauDeck {
             ultimaCarta = cartas.getLast();
             cartas.remove(ultimaCarta);
 
-            // SOLO voltear la siguiente carta si existe Y está face down
+            // CAMBIO AQUÍ: Solo voltear si existe la carta Y está face down
             if (!cartas.isEmpty()) {
                 CartaInglesa siguienteCarta = cartas.getLast();
                 if (!siguienteCarta.isFaceup()) {

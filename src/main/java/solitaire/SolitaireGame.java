@@ -110,16 +110,19 @@ public class SolitaireGame {
         boolean movimientoRealizado = false;
 
         TableauDeck fuente = tableau.get(numero - 1);
-        CartaInglesa carta = fuente.removerUltimaCarta();
-        if (moveCartaToFoundation(carta)) {
-            movimientoRealizado = true;
-        } else {
-            // regresar la carta al tableau porque no se puede hacer el movimiento
-            fuente.agregarCarta(carta);
+        if (!fuente.isEmpty()) {
+            CartaInglesa ultimaCarta = fuente.verUltimaCarta();
+            if (ultimaCarta != null && ultimaCarta.isFaceup()) {
+                CartaInglesa carta = fuente.removerUltimaCarta();
+                if (moveCartaToFoundation(carta)) {
+                    movimientoRealizado = true;
+                } else {
+                    fuente.agregarCarta(carta);
+                }
+            }
         }
         return movimientoRealizado;
     }
-
     /**
      * Tomar la carta de Waste y colocarla en el Tableau.
      *
