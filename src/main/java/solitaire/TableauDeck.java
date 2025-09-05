@@ -35,30 +35,40 @@ public class TableauDeck {
      */
     public ArrayList<CartaInglesa> removeStartingAt(int value) {
         ArrayList<CartaInglesa> removed = new ArrayList<>();
-        Iterator<CartaInglesa> iterator = cartas.iterator();
-        while (iterator.hasNext()) {
-            CartaInglesa next = iterator.next();
-            if (next.isFaceup()) {
-                if (next.getValor() <= value) {
-                    removed.add(next);
-                    iterator.remove();
-                }
+
+        // Primero, encontrar el índice de la primera carta face-up con el valor especificado
+        int startIndex = -1;
+        for (int i = 0; i < cartas.size(); i++) {
+            CartaInglesa carta = cartas.get(i);
+            if (carta.isFaceup() && carta.getValor() == value) {
+                startIndex = i;
+                break;
             }
         }
+
+        // Si encontramos la carta, remover desde ese punto hasta el final
+        if (startIndex != -1) {
+            // Crear una nueva lista con las cartas a remover
+            for (int i = startIndex; i < cartas.size(); i++) {
+                removed.add(cartas.get(i));
+            }
+
+            // Remover las cartas de la lista original
+            for (int i = cartas.size() - 1; i >= startIndex; i--) {
+                cartas.remove(i);
+            }
+        }
+
         return removed;
     }
 
     public CartaInglesa viewCardStartingAt(int value) {
-        CartaInglesa cartaConElValorDeseado = null;
-        for (CartaInglesa next : cartas) {
-            if (next.isFaceup()) {
-                if (next.getValor() <= value) {
-                    cartaConElValorDeseado = next;
-                    break;
-                }
+        for (CartaInglesa carta : cartas) {
+            if (carta.isFaceup() && carta.getValor() == value) {
+                return carta;
             }
         }
-        return cartaConElValorDeseado;
+        return null;
     }
 
     /**
@@ -103,9 +113,13 @@ public class TableauDeck {
         if (!cartas.isEmpty()) {
             ultimaCarta = cartas.getLast();
             cartas.remove(ultimaCarta);
+
+            // SOLO voltear la siguiente carta si existe Y está face down
             if (!cartas.isEmpty()) {
-                // voltea la siguiente carta del tableau
-                cartas.getLast().makeFaceUp();
+                CartaInglesa siguienteCarta = cartas.getLast();
+                if (!siguienteCarta.isFaceup()) {
+                    siguienteCarta.makeFaceUp();
+                }
             }
         }
         return ultimaCarta;

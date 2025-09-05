@@ -18,14 +18,19 @@ public class WastePile {
     }
 
     public void addCartas(ArrayList<CartaInglesa> nuevas) {
-        cartas.addAll(nuevas);
+        if (nuevas != null && !nuevas.isEmpty()) {
+            cartas.addAll(nuevas);
+        }
     }
-
     public ArrayList<CartaInglesa> emptyPile() {
         ArrayList<CartaInglesa> pile = new ArrayList<>();
         if (!cartas.isEmpty()) {
-            pile.addAll(cartas);
-            cartas = new ArrayList<>();
+            // Invertir el orden para que cuando se recargue el draw pile,
+            // las cartas estén en el orden correcto
+            for (int i = cartas.size() - 1; i >= 0; i--) {
+                pile.add(cartas.get(i));
+            }
+            cartas.clear(); // Usar clear() en lugar de crear nueva lista
         }
         return pile;
     }
@@ -64,5 +69,9 @@ public class WastePile {
 
     public boolean hayCartas() {
         return !cartas.isEmpty();
+    }
+
+    public int size() {
+        return cartas.size();
     }
 }

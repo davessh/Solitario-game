@@ -16,7 +16,7 @@ public class DrawPile {
     public DrawPile() {
         DeckOfCards.Mazo mazo = new DeckOfCards.Mazo();
         cartas = mazo.getCartas();
-        setCuantasCartasSeEntregan(3);
+        setCuantasCartasSeEntregan(3); // Cambiar a 3 en lugar de dejar el default
     }
 
     /**
@@ -60,12 +60,14 @@ public class DrawPile {
      */
     public ArrayList<CartaInglesa> retirarCartas() {
         ArrayList<CartaInglesa> retiradas = new ArrayList<>();
-        int maximoARetirar = cartas.size() < cuantasCartasSeEntregan ? cartas.size() : cuantasCartasSeEntregan;
+        int maximoARetirar = Math.min(cartas.size(), cuantasCartasSeEntregan);
 
         for (int i = 0; i < maximoARetirar; i++) {
-            CartaInglesa retirada = cartas.remove(0);
-            retirada.makeFaceUp();
-            retiradas.add(retirada);
+            if (!cartas.isEmpty()) { // Verificación adicional de seguridad
+                CartaInglesa retirada = cartas.remove(0);
+                retirada.makeFaceUp();
+                retiradas.add(retirada);
+            }
         }
         return retiradas;
     }

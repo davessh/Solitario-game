@@ -38,7 +38,7 @@ public class FoundationDeck {
      */
     public boolean agregarCarta(CartaInglesa carta) {
         boolean agregado = false;
-        if (carta.tieneElMismoPalo(palo)) {
+        if (carta != null && carta.tieneElMismoPalo(palo)) {
             if (cartas.isEmpty()) {
                 if (carta.getValorBajo() == 1) {
                     // si no hay cartas entonces la carta debe ser un A
