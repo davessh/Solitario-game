@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import solitaire.SolitaireGame;
@@ -13,6 +14,10 @@ import solitaire.TableauDeck;
 import solitaire.FoundationDeck;
 import DeckOfCards.CartaInglesa;
 import DeckOfCards.Palo;
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.util.Duration;
+import javafx.scene.effect.Glow;
 
 import java.util.ArrayList;
 
@@ -32,7 +37,7 @@ public class SolitaireJuegoController {
     @FXML private Pane foundationDiamonds;
     @FXML private Pane foundationClubs;
 
-    // Tableaux (7 columnas) - Cambiado a Pane para coincidir con el FXML
+    // Tableaux (7 columnas)
     @FXML private Pane tableau1;
     @FXML private Pane tableau2;
     @FXML private Pane tableau3;
@@ -51,6 +56,13 @@ public class SolitaireJuegoController {
     private ArrayList<Pane> tableauxPanes;
     private ArrayList<Pane> foundationPanes;
     private int movimientos = 0;
+    private Timeline timer;
+    private int segundos = 0;
+
+    // Variables para drag and drop
+    private Label cartaArrastrada = null;
+    private int sourceTableauIndex = -1;
+    private boolean isFromWaste = false;
 
     @FXML
     private void initialize() {
@@ -76,14 +88,33 @@ public class SolitaireJuegoController {
         // Configurar eventos de arrastrar y soltar (drag and drop)
         configurarEventos();
 
+        // Inicializar timer
+        inicializarTimer();
+
         // Actualizar la interfaz
         actualizarInterfaz();
+    }
+
+    private void inicializarTimer() {
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            segundos++;
+            int minutos = segundos / 60;
+            int segs = segundos % 60;
+            lblTiempo.setText(String.format("Tiempo: %02d:%02d", minutos, segs));
+        }));
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.play();
     }
 
     @FXML
     private void handleNuevoJuego() {
         solitaireGame = new SolitaireGame();
         movimientos = 0;
+        segundos = 0;
+        if (timer != null) {
+            timer.stop();
+        }
+        inicializarTimer();
         actualizarInterfaz();
         lblEstado.setText("Nuevo juego iniciado");
         lblMovimientos.setText("Movimientos: 0");
@@ -91,13 +122,18 @@ public class SolitaireJuegoController {
 
     @FXML
     private void handleVolverMenu() {
+        if (timer != null) {
+            timer.stop();
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaz/bienvenida-solitario.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) btnMenu.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.setTitle("Solitaire - Bienvenida");
+            stage.setResizable(true);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,15 +168,27 @@ public class SolitaireJuegoController {
     }
 
     private void configurarWastePile() {
-        // Configurar eventos para el waste pile
         wastePilePane.setOnMouseClicked(e -> {
-            // Manejar doble click para mover automáticamente a foundation
             if (e.getClickCount() == 2) {
                 if (solitaireGame.moveWasteToFoundation()) {
                     movimientos++;
                     actualizarInterfaz();
                     lblMovimientos.setText("Movimientos: " + movimientos);
+                    verificarVictoria();
                 }
+            }
+        });
+
+        // Configurar drag desde waste pile
+        wastePilePane.setOnDragDetected(e -> {
+            CartaInglesa carta = solitaireGame.getWastePile().verCarta();
+            if (carta != null) {
+                Dragboard db = wastePilePane.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString("waste");
+                db.setContent(content);
+                isFromWaste = true;
+                e.consume();
             }
         });
     }
@@ -149,19 +197,109 @@ public class SolitaireJuegoController {
         // Configurar eventos para cada tableau
         tableau.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
-                // Doble click para mover a foundation
                 if (solitaireGame.moveTableauToFoundation(index + 1)) {
+                    movimientos++;
+                    actualizarInterfaz();
+                    lblMovimientos.setText("Movimientos: " + movimientos);
+                    verificarVictoria();
+                }
+            }
+        });
+
+        // Configurar como destino de drop
+        tableau.setOnDragOver(e -> {
+            if (e.getGestureSource() != tableau && e.getDragboard().hasString()) {
+                e.acceptTransferModes(TransferMode.MOVE);
+            }
+            e.consume();
+        });
+
+        tableau.setOnDragEntered(e -> {
+            if (e.getGestureSource() != tableau && e.getDragboard().hasString()) {
+                tableau.setEffect(new Glow(0.5));
+            }
+            e.consume();
+        });
+
+        tableau.setOnDragExited(e -> {
+            tableau.setEffect(null);
+            e.consume();
+        });
+
+        tableau.setOnDragDropped(e -> {
+            Dragboard db = e.getDragboard();
+            boolean success = false;
+
+            if (db.hasString()) {
+                String source = db.getString();
+                if (source.equals("waste")) {
+                    success = solitaireGame.moveWasteToTableau(index + 1);
+                    isFromWaste = false;
+                } else if (source.startsWith("tableau")) {
+                    int sourceIndex = Integer.parseInt(source.split("-")[1]);
+                    success = solitaireGame.moveTableauToTableau(sourceIndex + 1, index + 1);
+                }
+
+                if (success) {
                     movimientos++;
                     actualizarInterfaz();
                     lblMovimientos.setText("Movimientos: " + movimientos);
                 }
             }
+
+            tableau.setEffect(null);
+            e.setDropCompleted(success);
+            e.consume();
         });
     }
 
     private void configurarFoundation(Pane foundation, int index) {
-        // Configurar eventos para las foundations
-        // Principalmente para recibir cartas arrastradas
+        // Configurar como destino de drop
+        foundation.setOnDragOver(e -> {
+            if (e.getDragboard().hasString()) {
+                e.acceptTransferModes(TransferMode.MOVE);
+            }
+            e.consume();
+        });
+
+        foundation.setOnDragEntered(e -> {
+            if (e.getDragboard().hasString()) {
+                foundation.setEffect(new Glow(0.8));
+            }
+            e.consume();
+        });
+
+        foundation.setOnDragExited(e -> {
+            foundation.setEffect(null);
+            e.consume();
+        });
+
+        foundation.setOnDragDropped(e -> {
+            Dragboard db = e.getDragboard();
+            boolean success = false;
+
+            if (db.hasString()) {
+                String source = db.getString();
+                if (source.equals("waste")) {
+                    success = solitaireGame.moveWasteToFoundation();
+                    isFromWaste = false;
+                } else if (source.startsWith("tableau")) {
+                    int sourceIndex = Integer.parseInt(source.split("-")[1]);
+                    success = solitaireGame.moveTableauToFoundation(sourceIndex + 1);
+                }
+
+                if (success) {
+                    movimientos++;
+                    actualizarInterfaz();
+                    lblMovimientos.setText("Movimientos: " + movimientos);
+                    verificarVictoria();
+                }
+            }
+
+            foundation.setEffect(null);
+            e.setDropCompleted(success);
+            e.consume();
+        });
     }
 
     private void actualizarInterfaz() {
@@ -176,28 +314,30 @@ public class SolitaireJuegoController {
 
         // Actualizar foundations
         actualizarFoundations();
+    }
 
-        // Verificar si el juego terminó
+    private void verificarVictoria() {
         if (solitaireGame.isGameOver()) {
+            if (timer != null) {
+                timer.stop();
+            }
             lblEstado.setText("¡Felicitaciones! ¡Ganaste!");
+            lblEstado.setStyle(lblEstado.getStyle() + "-fx-text-fill: #00FF00;");
         }
     }
 
     private void actualizarDrawPile() {
-        // Limpiar contenido previo
         drawPilePane.getChildren().clear();
 
         if (solitaireGame.getDrawPile().hayCartas()) {
-            // Mostrar reverso de carta
             Label cartaLabel = new Label("🂠");
-            cartaLabel.setStyle("-fx-font-size: 48px; -fx-text-fill: blue;");
-            cartaLabel.setLayoutX(15);
+            cartaLabel.setStyle("-fx-font-size: 48px; -fx-text-fill: #4169E1; -fx-alignment: center;");
+            cartaLabel.setLayoutX(18);
             cartaLabel.setLayoutY(35);
             drawPilePane.getChildren().add(cartaLabel);
         } else {
-            // Mostrar que está vacío con símbolo de recarga
             Label recargaLabel = new Label("↻");
-            recargaLabel.setStyle("-fx-font-size: 36px; -fx-text-fill: white;");
+            recargaLabel.setStyle("-fx-font-size: 40px; -fx-text-fill: #FFD700; -fx-alignment: center; -fx-font-weight: bold;");
             recargaLabel.setLayoutX(25);
             recargaLabel.setLayoutY(40);
             drawPilePane.getChildren().add(recargaLabel);
@@ -205,14 +345,13 @@ public class SolitaireJuegoController {
     }
 
     private void actualizarWastePile() {
-        // Limpiar contenido previo
         wastePilePane.getChildren().clear();
 
         CartaInglesa carta = solitaireGame.getWastePile().verCarta();
         if (carta != null) {
             Label cartaLabel = crearLabelCarta(carta);
-            cartaLabel.setLayoutX(15);
-            cartaLabel.setLayoutY(35);
+            cartaLabel.setLayoutX(10);
+            cartaLabel.setLayoutY(10);
             wastePilePane.getChildren().add(cartaLabel);
         }
     }
@@ -222,16 +361,14 @@ public class SolitaireJuegoController {
 
         for (int i = 0; i < tableaux.size(); i++) {
             Pane tableauPane = tableauxPanes.get(i);
-            // Limpiar contenido previo
             tableauPane.getChildren().clear();
 
             TableauDeck tableau = tableaux.get(i);
             ArrayList<CartaInglesa> cartas = tableau.getCards();
 
-            // Configuración para el apilamiento de cartas
-            double yOffset = 0; // Posición Y inicial
-            double cardSpacing = 25; // Espaciado entre cartas (solapamiento)
-            double xCentered = 10; // Centrar horizontalmente las cartas
+            double yOffset = 10;
+            double cardSpacing = 25;
+            double xCentered = 10;
 
             for (int j = 0; j < cartas.size(); j++) {
                 CartaInglesa carta = cartas.get(j);
@@ -243,55 +380,62 @@ public class SolitaireJuegoController {
                     cartaLabel = crearLabelCartaReverso();
                 }
 
-                // Posicionar la carta en el tableau
                 cartaLabel.setLayoutX(xCentered);
                 cartaLabel.setLayoutY(yOffset);
 
-                // Incrementar la posición Y para la siguiente carta (efecto apilado)
                 yOffset += cardSpacing;
 
-                // Configurar evento para cada carta individual
-                configurarEventosCarta(cartaLabel, carta, i, j);
+                // Solo configurar drag si es la carta superior y está face up
+                if (j == cartas.size() - 1 && carta.isFaceup()) {
+                    configurarDragCarta(cartaLabel, i);
+                }
 
+                configurarEventosCarta(cartaLabel, carta, i, j);
                 tableauPane.getChildren().add(cartaLabel);
             }
 
-            // Si el tableau está vacío, mostrar zona de drop visual
             if (cartas.isEmpty()) {
                 Label placeholderLabel = new Label("K");
                 placeholderLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: rgba(255,255,255,0.3); " +
                         "-fx-background-color: transparent; -fx-padding: 20;");
-                placeholderLabel.setLayoutX(25);
-                placeholderLabel.setLayoutY(30);
+                placeholderLabel.setLayoutX(30);
+                placeholderLabel.setLayoutY(50);
                 tableauPane.getChildren().add(placeholderLabel);
             }
         }
     }
 
+    private void configurarDragCarta(Label cartaLabel, int tableauIndex) {
+        cartaLabel.setOnDragDetected(e -> {
+            Dragboard db = cartaLabel.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent content = new ClipboardContent();
+            content.putString("tableau-" + tableauIndex);
+            db.setContent(content);
+            sourceTableauIndex = tableauIndex;
+            e.consume();
+        });
+    }
+
     private void configurarEventosCarta(Label cartaLabel, CartaInglesa carta, int tableauIndex, int cardIndex) {
-        // Configurar eventos específicos para cada carta
         cartaLabel.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2 && carta.isFaceup()) {
-                // Doble click en carta individual para mover a foundation
                 if (solitaireGame.moveTableauToFoundation(tableauIndex + 1)) {
                     movimientos++;
                     actualizarInterfaz();
                     lblMovimientos.setText("Movimientos: " + movimientos);
+                    verificarVictoria();
                 }
             }
         });
 
-        // Aquí puedes agregar drag and drop para cartas individuales
         cartaLabel.setOnMouseEntered(e -> {
             if (carta.isFaceup()) {
-                cartaLabel.setStyle(cartaLabel.getStyle() + "-fx-effect: dropshadow(gaussian, yellow, 10, 0.5, 0, 0);");
+                cartaLabel.setEffect(new Glow(0.3));
             }
         });
 
         cartaLabel.setOnMouseExited(e -> {
-            // Remover el efecto hover
-            String style = cartaLabel.getStyle().replace("-fx-effect: dropshadow(gaussian, yellow, 10, 0.5, 0, 0);", "");
-            cartaLabel.setStyle(style);
+            cartaLabel.setEffect(null);
         });
     }
 
@@ -307,8 +451,8 @@ public class SolitaireJuegoController {
 
             if (ultimaCarta != null) {
                 Label cartaLabel = crearLabelCarta(ultimaCarta);
-                cartaLabel.setLayoutX(15);
-                cartaLabel.setLayoutY(35);
+                cartaLabel.setLayoutX(10);
+                cartaLabel.setLayoutY(10);
                 foundationPane.getChildren().add(cartaLabel);
             }
         }
@@ -318,17 +462,16 @@ public class SolitaireJuegoController {
         String simbolo = obtenerSimboloCarta(carta);
         Label label = new Label(simbolo);
 
-        // Estilo según el color de la carta
-        if (carta.getColor().equals("rojo")) {  // Tu enum usa "rojo" en minúscula
-            label.setStyle("-fx-font-size: 16px; -fx-text-fill: red; -fx-background-color: white; " +
-                    "-fx-border-color: black; -fx-border-width: 1; -fx-padding: 8 12; " +
-                    "-fx-background-radius: 5; -fx-border-radius: 5; " +
-                    "-fx-min-width: 60; -fx-min-height: 80; -fx-alignment: center;");
+        String baseStyle = "-fx-font-size: 14px; -fx-background-color: white; " +
+                "-fx-border-color: #333333; -fx-border-width: 2; -fx-padding: 5 8; " +
+                "-fx-background-radius: 8; -fx-border-radius: 8; " +
+                "-fx-min-width: 65; -fx-min-height: 90; -fx-alignment: center; " +
+                "-fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0.5, 1, 1);";
+
+        if (carta.getColor().equals("rojo")) {
+            label.setStyle(baseStyle + "-fx-text-fill: #DC143C;");
         } else {
-            label.setStyle("-fx-font-size: 16px; -fx-text-fill: black; -fx-background-color: white; " +
-                    "-fx-border-color: black; -fx-border-width: 1; -fx-padding: 8 12; " +
-                    "-fx-background-radius: 5; -fx-border-radius: 5; " +
-                    "-fx-min-width: 60; -fx-min-height: 80; -fx-alignment: center;");
+            label.setStyle(baseStyle + "-fx-text-fill: #000000;");
         }
 
         return label;
@@ -336,18 +479,18 @@ public class SolitaireJuegoController {
 
     private Label crearLabelCartaReverso() {
         Label label = new Label("🂠");
-        label.setStyle("-fx-font-size: 48px; -fx-text-fill: darkblue; -fx-background-color: darkblue; " +
-                "-fx-border-color: black; -fx-border-width: 1; -fx-padding: 8 12; " +
-                "-fx-background-radius: 5; -fx-border-radius: 5; " +
-                "-fx-min-width: 60; -fx-min-height: 80; -fx-alignment: center;");
+        label.setStyle("-fx-font-size: 40px; -fx-text-fill: #4169E1; -fx-background-color: #4169E1; " +
+                "-fx-border-color: #000080; -fx-border-width: 2; -fx-padding: 5 8; " +
+                "-fx-background-radius: 8; -fx-border-radius: 8; " +
+                "-fx-min-width: 65; -fx-min-height: 90; -fx-alignment: center; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0.5, 1, 1);");
         return label;
     }
 
     private String obtenerSimboloCarta(CartaInglesa carta) {
-        // Convertir carta a representación visual
         String valor;
         switch (carta.getValor()) {
-            case 14: valor = "A"; break; // As es 14 en tu sistema
+            case 14: valor = "A"; break;
             case 11: valor = "J"; break;
             case 12: valor = "Q"; break;
             case 13: valor = "K"; break;
@@ -363,6 +506,6 @@ public class SolitaireJuegoController {
             default: palo = "?";
         }
 
-        return valor + palo;
+        return valor + "\n" + palo;
     }
 }
