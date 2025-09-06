@@ -44,7 +44,7 @@
             <!-- Contenedor de botones -->
             <VBox alignment="CENTER" layoutX="450.0" layoutY="400.0" spacing="25.0" prefWidth="300.0">
                 <children>
-                    <Button fx:id="btnJugar" onAction="#handleJugarAction" prefHeight="70.0" prefWidth="250.0"
+                    <Button fx:id="btnJugar" onAction="#accionJugar" prefHeight="70.0" prefWidth="250.0"
                             style="-fx-background-color: linear-gradient(to bottom, #4CAF50, #45a049);
                                    -fx-text-fill: white;
                                    -fx-background-radius: 15;
@@ -64,7 +64,7 @@
                         </effect>
                     </Button>
 
-                    <Button fx:id="btnSalir" onAction="#handleSalirAction" prefHeight="70.0" prefWidth="250.0"
+                    <Button fx:id="btnSalir" onAction="#accionSalir" prefHeight="70.0" prefWidth="250.0"
                             style="-fx-background-color: linear-gradient(to bottom, #f44336, #d32f2f);
                                    -fx-text-fill: white;
                                    -fx-background-radius: 15;

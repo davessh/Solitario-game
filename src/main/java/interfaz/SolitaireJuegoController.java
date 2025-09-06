@@ -84,10 +84,10 @@ public class SolitaireJuegoController {
         tableauxPanes.add(tableau7);
 
         foundationPanes = new ArrayList<>();
-        foundationPanes.add(foundationClubs);    // TREBOL es ordinal 0
-        foundationPanes.add(foundationDiamonds); // DIAMANTE es ordinal 1
-        foundationPanes.add(foundationHearts);   // CORAZON es ordinal 2
-        foundationPanes.add(foundationSpades);   // PICA es ordinal 3
+        foundationPanes.add(foundationClubs);
+        foundationPanes.add(foundationDiamonds);
+        foundationPanes.add(foundationHearts);
+        foundationPanes.add(foundationSpades);
 
         configurarEventos();
 
@@ -166,9 +166,6 @@ public class SolitaireJuegoController {
     }
 
     private void configurarWastePile() {
-        // ELIMINAR completamente el doble-click, solo drag
-
-        // Configurar drag desde waste pile
         wastePilePane.setOnDragDetected(e -> {
             CartaInglesa carta = solitaireGame.getWastePile().verCarta();
             if (carta != null) {
@@ -249,7 +246,6 @@ public class SolitaireJuegoController {
 
         foundation.setOnDragExited(e -> {
             foundation.setEffect(null);
-            // Restaurar estilo original
             String currentStyle = foundation.getStyle();
             foundation.setStyle(currentStyle.replaceAll("-fx-border-color: #FFD700; -fx-border-width: 4;", ""));
             e.consume();
@@ -278,7 +274,6 @@ public class SolitaireJuegoController {
             }
 
             foundation.setEffect(null);
-            // Restaurar estilo original
             String currentStyle = foundation.getStyle();
             foundation.setStyle(currentStyle.replaceAll("-fx-border-color: #FFD700; -fx-border-width: 4;", ""));
             e.setDropCompleted(success);
@@ -393,7 +388,6 @@ public class SolitaireJuegoController {
     }
 
     private void configurarEventosCarta(Label cartaLabel, CartaInglesa carta, int tableauIndex, int cardIndex) {
-        // SOLO efectos visuales, SIN doble-click
         cartaLabel.setOnMouseEntered(e -> {
             TableauDeck tableau = solitaireGame.getTableau().get(tableauIndex);
             ArrayList<CartaInglesa> cartas = tableau.getCards();
@@ -465,13 +459,11 @@ public class SolitaireJuegoController {
                 palo = "?";
         }
 
-        // StackPane control de layout
         javafx.scene.layout.StackPane stackPane = new javafx.scene.layout.StackPane();
         stackPane.setMinSize(80, 110);
         stackPane.setMaxSize(80, 110);
         stackPane.setPrefSize(80, 110);
 
-        //Carta grafica (fondo)
         String backgroundColor = carta.getColor().equals("rojo") ? "white" : "white";
         String textColor = carta.getColor().equals("rojo") ? "#DC143C" : "#000000";
 

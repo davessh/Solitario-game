@@ -19,12 +19,10 @@ public class SolitaireBienvenidaController {
 
     @FXML
     private void initialize() {
-        // Agregar efectos hover a los botones
-        setupButtonHoverEffects();
+        prepararEfectoBoton();
     }
 
-    private void setupButtonHoverEffects() {
-        // Efecto hover para botón Jugar
+    private void prepararEfectoBoton() {
         btnJugar.setOnMouseEntered(e -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), btnJugar);
             st.setToX(1.05);
@@ -44,7 +42,6 @@ public class SolitaireBienvenidaController {
                     "-fx-background-color: linear-gradient(to bottom, #4CAF50, #45a049);"));
         });
 
-        // Efecto hover para botón Salir
         btnSalir.setOnMouseEntered(e -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), btnSalir);
             st.setToX(1.05);
@@ -65,8 +62,9 @@ public class SolitaireBienvenidaController {
         });
     }
 
+
     @FXML
-    private void handleJugarAction() {
+    private void accionJugar() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaz/tableroSolitario.fxml"));
             Parent root = loader.load();
@@ -77,8 +75,6 @@ public class SolitaireBienvenidaController {
             stage.setTitle("Solitaire Klondike");
 
             stage.setResizable(true);
-
-            // Establecer tamaños mínimos
             stage.setMinWidth(1000);
             stage.setMinHeight(700);
 
@@ -89,7 +85,7 @@ public class SolitaireBienvenidaController {
     }
 
     @FXML
-    private void handleSalirAction() {
+    private void accionSalir() {
         Stage stage = (Stage) btnSalir.getScene().getWindow();
         stage.close();
     }

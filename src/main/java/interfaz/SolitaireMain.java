@@ -13,7 +13,6 @@ public class SolitaireMain extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaz/bienvenida-solitario.fxml"));
         Parent root = loader.load();
-
         Scene scene = new Scene(root, 1200, 800);
 
         primaryStage.setTitle("Juego Solitario");
@@ -21,14 +20,7 @@ public class SolitaireMain extends Application {
         primaryStage.setResizable(true);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-
-
         primaryStage.centerOnScreen();
-        try {
-            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("interfaz/trebol.png")));
-        } catch (Exception e) {
-        }
-
         primaryStage.show();
     }
 
