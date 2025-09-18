@@ -1,7 +1,7 @@
 package solitaire;
 
 import DeckOfCards.CartaInglesa;
-
+import DeckOfCards.Pila;
 import java.util.ArrayList;
 /**
  * Modela el montículo donde se colocan las cartas
@@ -11,24 +11,26 @@ import java.util.ArrayList;
  * @version (2025-2)
  */
 public class WastePile {
-    private ArrayList<CartaInglesa> cartas;
-
+    //private ArrayList<CartaInglesa> cartas;
+    private Pila<CartaInglesa> cartas;
     public WastePile() {
-        cartas = new ArrayList<>();
+        //cartas = new ArrayList<>();
+        cartas = new Pila<>(52);
     }
 
     public void addCartas(ArrayList<CartaInglesa> nuevas) {
         if (nuevas != null && !nuevas.isEmpty()) {
-            cartas.addAll(nuevas);
+            for(CartaInglesa carta : nuevas) {
+                if(!cartas.pilaLlena()) {
+                    cartas.push(carta);
+                }
+            }
         }
     }
     public ArrayList<CartaInglesa> emptyPile() {
         ArrayList<CartaInglesa> pile = new ArrayList<>();
-        if (!cartas.isEmpty()) {
-            for (int i = cartas.size() - 1; i >= 0; i--) {
-                pile.add(cartas.get(i));
-            }
-            cartas.clear(); // se limpia con un clear
+        while(!cartas.pilaVacia()) {
+            pile.add(cartas.pop());
         }
         return pile;
     }
@@ -38,38 +40,40 @@ public class WastePile {
      * @return Carta que está encima. Si está vacía, es null.
      */
     public CartaInglesa verCarta() {
-        CartaInglesa regresar = null;
-        if (!cartas.isEmpty()) {
-            regresar = cartas.getLast();
+        if (cartas.pilaVacia()) {
+            return null;
         }
-        return regresar;
+        CartaInglesa carta = cartas.pop();
+        cartas.push(carta);
+        return carta;
     }
     public CartaInglesa getCarta() {
-        CartaInglesa regresar = null;
-        if (!cartas.isEmpty()) {
-            regresar = cartas.removeLast();
+        if (cartas.pilaVacia()) {
+            return null;
         }
-        return regresar;
+        return cartas.pop();
     }
 
     @Override
     public String toString() {
-        StringBuilder stb = new StringBuilder();
-        if (cartas.isEmpty()) {
-            stb.append("---");
-        } else {
-            CartaInglesa regresar = cartas.getLast();
-            regresar.makeFaceUp();
-            stb.append(regresar.toString());
+        StringBuilder s = new StringBuilder();
+        if(cartas.pilaVacia()) {
+            s.append("----");
+        }else {
+            CartaInglesa carta = verCarta();
+            if(carta != null) {
+                carta.makeFaceUp();
+                s.append(carta.toString());
+            }
         }
-        return stb.toString();
+        return s.toString();
     }
 
     public boolean hayCartas() {
-        return !cartas.isEmpty();
+        return !cartas.pilaVacia();
     }
 
     public int size() {
-        return cartas.size();
+        return cartas.getTope() + 1;
     }
 }

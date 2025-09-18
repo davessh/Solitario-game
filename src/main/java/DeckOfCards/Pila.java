@@ -61,4 +61,18 @@ public class Pila<T> {
         }
         return "Valor: " + pila[tope].toString();
     }
+
+    public T peek(){
+        if(pilaVacia()) {
+           return null;
+        }
+        return pila[tope];
+    }
+    public int tamaño(){
+        return tope + 1;
+    }
+
+    public void limpiarPila(){
+        tope = -1;
+    }
 }

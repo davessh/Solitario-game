@@ -1,7 +1,7 @@
 package solitaire;
 
 import DeckOfCards.CartaInglesa;
-
+import DeckOfCards.Pila;
 import java.util.ArrayList;
 
 /**
@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 public class DrawPile {
     private ArrayList<CartaInglesa> cartas;
+    //private Pila<CartaInglesa> cartas;
     private int cuantasCartasSeEntregan = 3;
 
     public DrawPile() {
