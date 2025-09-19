@@ -16,12 +16,12 @@ public class SolitaireGame {
     FoundationDeck lastFoundationUpdated;
     DrawPile drawPile;
     WastePile wastePile;
-    private UndoManager undoManager;
+    private UndoController undoManager;
 
     public SolitaireGame() {
         drawPile = new DrawPile();
         wastePile = new WastePile();
-        undoManager = new UndoManager();
+        undoManager = new UndoController();
         createTableaux();
         createFoundations();
         wastePile.addCartas(drawPile.retirarCartas());
@@ -38,7 +38,7 @@ public class SolitaireGame {
      * Deshace el último movimiento
      */
     public int deshacerMovimiento() {
-        GameState estadoAnterior = undoManager.deshacerUltimoEstado();
+        EstadoDeJuego estadoAnterior = undoManager.deshacerUltimoEstado();
         if (estadoAnterior != null) {
             restaurarEstado(estadoAnterior);
             return estadoAnterior.getMovimientos();
@@ -49,7 +49,7 @@ public class SolitaireGame {
     /**
      * Restaura el juego a un estado anterior
      */
-    private void restaurarEstado(GameState estado) {
+    private void restaurarEstado(EstadoDeJuego estado) {
         // Limpiar estado actual
         tableau.clear();
         foundation.clear();

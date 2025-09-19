@@ -3,27 +3,22 @@ package solitaire;
 import DeckOfCards.CartaInglesa;
 import java.util.ArrayList;
 
-/**
- * Representa un estado del juego de Solitario que puede ser guardado y restaurado.
- * @author Cecilia Curlango
- * @version 2025
- */
-public class GameState {
+public class EstadoDeJuego {
     private ArrayList<ArrayList<CartaInglesa>> tableauStates;
     private ArrayList<ArrayList<CartaInglesa>> foundationStates;
     private ArrayList<CartaInglesa> drawPileState;
     private ArrayList<CartaInglesa> wastePileState;
     private int movimientos;
 
-    public GameState() {
+    public EstadoDeJuego() {
         tableauStates = new ArrayList<>();
         foundationStates = new ArrayList<>();
         drawPileState = new ArrayList<>();
         wastePileState = new ArrayList<>();
     }
 
-    public static GameState createFromGame(SolitaireGame game, int movimientos) {
-        GameState state = new GameState();
+    public static EstadoDeJuego createFromGame(SolitaireGame game, int movimientos) {
+        EstadoDeJuego state = new EstadoDeJuego();
         state.movimientos = movimientos;
 
         // Copiar estados de tableaux
@@ -45,14 +40,13 @@ public class GameState {
         for (FoundationDeck foundation : game.getFoundations()) {
             ArrayList<CartaInglesa> foundationCopy = new ArrayList<>();
             // Extraer todas las cartas del foundation para copiarlas
-            ArrayList<CartaInglesa> tempCards = new ArrayList<>();
+            ArrayList<CartaInglesa> cartasTemp = new ArrayList<>();
             while (!foundation.estaVacio()) {
                 CartaInglesa carta = foundation.removerUltimaCarta();
-                tempCards.add(0, carta); // Insertar al inicio para mantener orden
+                cartasTemp.add(0, carta); // Insertar al inicio para mantener orden
             }
 
-            // Copiar y restaurar las cartas
-            for (CartaInglesa carta : tempCards) {
+            for (CartaInglesa carta : cartasTemp) {
                 CartaInglesa cartaCopy = new CartaInglesa(carta.getValor(), carta.getPalo(), carta.getColor());
                 cartaCopy.makeFaceUp();
                 foundationCopy.add(cartaCopy);
@@ -77,7 +71,7 @@ public class GameState {
             state.drawPileState.add(cartaCopy);
         }
 
-        // IMPORTANTE: Restaurar el draw pile original
+        // Restaurar el draw pile original
         if (!drawCards.isEmpty()) {
             drawPile.recargar(drawCards);
         }
@@ -90,7 +84,7 @@ public class GameState {
             cartaCopy.makeFaceUp();
             state.wastePileState.add(cartaCopy);
         }
-        // Restaurar waste pile original
+        // Restaurar wastepile
         ArrayList<CartaInglesa> wasteCardsReversed = new ArrayList<>();
         for (int i = wasteCards.size() - 1; i >= 0; i--) {
             wasteCardsReversed.add(wasteCards.get(i));
