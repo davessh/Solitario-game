@@ -10,14 +10,23 @@ import java.util.ArrayList;
  * @version 2025
  */
 public class DrawPile {
-    private ArrayList<CartaInglesa> cartas;
-    //private Pila<CartaInglesa> cartas;
+    //private ArrayList<CartaInglesa> cartas;
+    private Pila<CartaInglesa> cartas;
     private int cuantasCartasSeEntregan = 3;
 
     public DrawPile() {
+//        DeckOfCards.Mazo mazo = new DeckOfCards.Mazo();
+//        cartas = mazo.getCartas();
+//        setCuantasCartasSeEntregan(3); // Cambiar a 3 en lugar de dejar el default
+        cartas = new Pila<>(52);
         DeckOfCards.Mazo mazo = new DeckOfCards.Mazo();
-        cartas = mazo.getCartas();
-        setCuantasCartasSeEntregan(3); // Cambiar a 3 en lugar de dejar el default
+        ArrayList<CartaInglesa> cartasDelMazo = mazo.getCartas();
+                for(CartaInglesa carta : cartasDelMazo) {
+                    if(!cartas.pilaLlena()){
+                        cartas.push(carta);
+                    }
+                }
+                setCuantasCartasSeEntregan(3);
     }
 
     /**
@@ -47,8 +56,9 @@ public class DrawPile {
      */
     public ArrayList<CartaInglesa> getCartas(int cantidad) {
         ArrayList<CartaInglesa> retiradas = new ArrayList<>();
-        for (int i = 0; i < cantidad; i++) {
-            retiradas.add(cartas.remove(0));
+
+        for(int i  = 0; i < cantidad && !cartas.pilaVacia(); i++) {
+            retiradas.add(cartas.pop());
         }
         return retiradas;
     }
@@ -61,15 +71,13 @@ public class DrawPile {
      */
     public ArrayList<CartaInglesa> retirarCartas() {
         ArrayList<CartaInglesa> retiradas = new ArrayList<>();
-        int maximoARetirar = Math.min(cartas.size(), cuantasCartasSeEntregan);
+        int maximoARetirar = Math.min(cartas.getTope() + 1, cuantasCartasSeEntregan);
 
-        for (int i = 0; i < maximoARetirar; i++) {
-            if (!cartas.isEmpty()) { // Verificación adicional de seguridad
-                CartaInglesa retirada = cartas.remove(0);
-                retirada.makeFaceUp();
-                retiradas.add(retirada);
+        for (int i = 0; i < maximoARetirar && !cartas.pilaVacia(); i++) {
+            CartaInglesa retirada = cartas.pop();
+            retirada.makeFaceUp();
+            retiradas.add(retirada);
             }
-        }
         return retiradas;
     }
 
@@ -78,15 +86,17 @@ public class DrawPile {
      * @return true si hay cartas, false si no.
      */
     public boolean hayCartas() {
-        return cartas.size() > 0;
+        return !cartas.pilaVacia();
     }
 
     public CartaInglesa verCarta() {
-        CartaInglesa regresar = null;
-        if (!cartas.isEmpty()) {
-            regresar = cartas.getLast();
+        if (cartas.pilaVacia()) {
+            return null;
         }
-        return regresar;
+
+        CartaInglesa carta = cartas.pop();
+        cartas.push(carta);
+        return carta;
     }
     /**
      * Agrega las cartas recibidas al monton y las voltea
@@ -94,15 +104,22 @@ public class DrawPile {
      * @param cartasAgregar cartas que se agregan
      */
     public void recargar(ArrayList<CartaInglesa> cartasAgregar) {
-        cartas = cartasAgregar;
-        for (CartaInglesa aCarta : cartas) {
-            aCarta.makeFaceDown();
+        while(!cartas.pilaVacia()) {
+            cartas.pop();
+        }
+
+        for(CartaInglesa carta : cartasAgregar) {
+            carta.makeFaceDown();
+            if(!cartas.pilaLlena()){
+                cartas.push(carta);
+        }
+
         }
     }
 
     @Override
     public String toString() {
-        if (cartas.isEmpty()) {
+        if (cartas.pilaVacia()) {
             return "-E-";
         }
         return "@";
