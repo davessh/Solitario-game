@@ -95,8 +95,7 @@
             <!-- Información del juego -->
             <VBox alignment="CENTER" layoutX="400.0" layoutY="650.0" prefWidth="400.0" spacing="10.0">
                 <children>
-                    <Label text="Arrastra las cartas para moverlas" textFill="#CCCCCC" style="-fx-font-size: 16px;" />
-                    <Label text="Doble click para movimiento automático" textFill="#CCCCCC" style="-fx-font-size: 16px;" />
+                    <Label text="Arrastra las cartas para moverlas" textFill="#CCCCCC" style="-fx-font-size: 23px;" />
                 </children>
             </VBox>
         </children>

@@ -509,17 +509,17 @@ public class SolitaireJuegoController {
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0.5, 1, 1);");
 
         Label valorSuperior = new Label(valor);
-        valorSuperior.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
+        valorSuperior.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
         javafx.scene.layout.StackPane.setAlignment(valorSuperior, javafx.geometry.Pos.TOP_RIGHT);
         javafx.geometry.Insets marginSuperior = new javafx.geometry.Insets(5, 5, 0, 0);
         javafx.scene.layout.StackPane.setMargin(valorSuperior, marginSuperior);
 
         Label paloCentro = new Label(palo);
-        paloCentro.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
+        paloCentro.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
         javafx.scene.layout.StackPane.setAlignment(paloCentro, javafx.geometry.Pos.CENTER);
 
         Label valorInferior = new Label(valor);
-        valorInferior.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: " + textColor + "; -fx-rotate: 180;");
+        valorInferior.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: " + textColor + "; -fx-rotate: 180;");
         javafx.scene.layout.StackPane.setAlignment(valorInferior, javafx.geometry.Pos.BOTTOM_LEFT);
         javafx.geometry.Insets marginInferior = new javafx.geometry.Insets(0, 0, 5, 5);
         javafx.scene.layout.StackPane.setMargin(valorInferior, marginInferior);
