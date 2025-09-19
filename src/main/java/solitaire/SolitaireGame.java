@@ -2,10 +2,10 @@ package solitaire;
 
 import DeckOfCards.CartaInglesa;
 import DeckOfCards.Palo;
-
 import java.util.ArrayList;
+
 /**
- * Juego de solitario.
+ * Juego de solitario con funcionalidad Undo.
  *
  * @author (Cecilia Curlango Rosas)
  * @version (2025-2)
@@ -16,13 +16,110 @@ public class SolitaireGame {
     FoundationDeck lastFoundationUpdated;
     DrawPile drawPile;
     WastePile wastePile;
+    private UndoManager undoManager;
 
     public SolitaireGame() {
         drawPile = new DrawPile();
         wastePile = new WastePile();
+        undoManager = new UndoManager();
         createTableaux();
         createFoundations();
         wastePile.addCartas(drawPile.retirarCartas());
+    }
+
+    /**
+     * Guarda el estado actual antes de realizar un movimiento
+     */
+    public void guardarEstadoActual(int movimientos) {
+        undoManager.guardarEstado(this, movimientos);
+    }
+
+    /**
+     * Deshace el último movimiento
+     */
+    public int deshacerMovimiento() {
+        GameState estadoAnterior = undoManager.deshacerUltimoEstado();
+        if (estadoAnterior != null) {
+            restaurarEstado(estadoAnterior);
+            return estadoAnterior.getMovimientos();
+        }
+        return -1; // No hay estados para deshacer
+    }
+
+    /**
+     * Restaura el juego a un estado anterior
+     */
+    private void restaurarEstado(GameState estado) {
+        // Limpiar estado actual
+        tableau.clear();
+        foundation.clear();
+
+        // Restaurar tableaux
+        for (int i = 0; i < estado.getTableauStates().size(); i++) {
+            TableauDeck nuevoTableau = new TableauDeck();
+            ArrayList<CartaInglesa> cartas = estado.getTableauStates().get(i);
+            if (!cartas.isEmpty()) {
+                nuevoTableau.inicializar(new ArrayList<>(cartas));
+                // Asegurar que las cartas mantengan su estado face up/down
+                for (int j = 0; j < cartas.size(); j++) {
+                    CartaInglesa cartaOriginal = cartas.get(j);
+                    CartaInglesa cartaTableau = nuevoTableau.getCards().get(j);
+                    if (cartaOriginal.isFaceup()) {
+                        cartaTableau.makeFaceUp();
+                    } else {
+                        cartaTableau.makeFaceDown();
+                    }
+                }
+            }
+            tableau.add(nuevoTableau);
+        }
+
+        // Restaurar foundations
+        for (int i = 0; i < 4; i++) {
+            Palo palo = Palo.values()[i];
+            FoundationDeck nuevoFoundation = new FoundationDeck(palo);
+            ArrayList<CartaInglesa> cartas = estado.getFoundationStates().get(i);
+            for (CartaInglesa carta : cartas) {
+                nuevoFoundation.agregarCarta(carta);
+            }
+            foundation.add(nuevoFoundation);
+        }
+
+        // Restaurar draw pile
+        drawPile = new DrawPile();
+        // Limpiar draw pile actual
+        while (drawPile.hayCartas()) {
+            drawPile.getCartas(1);
+        }
+        // Recargar con las cartas del estado
+        if (!estado.getDrawPileState().isEmpty()) {
+            drawPile.recargar(new ArrayList<>(estado.getDrawPileState()));
+        }
+
+        // Restaurar waste pile
+        wastePile = new WastePile();
+        if (!estado.getWastePileState().isEmpty()) {
+            // Invertir el orden para mantener la estructura de pila correcta
+            ArrayList<CartaInglesa> wasteReversed = new ArrayList<>();
+            for (int i = estado.getWastePileState().size() - 1; i >= 0; i--) {
+                wasteReversed.add(estado.getWastePileState().get(i));
+            }
+            wastePile.addCartas(wasteReversed);
+        }
+    }
+
+    /**
+     * Verifica si hay movimientos que se pueden deshacer
+     */
+    public boolean puedeDeshacer() {
+        return undoManager.hayEstadosParaDeshacer();
+    }
+
+    /**
+     * Limpia el historial de Undo
+     */
+    public void limpiarHistorialUndo() {
+        undoManager.limpiarEstados();
     }
 
     /**
@@ -92,13 +189,9 @@ public class SolitaireGame {
                     movimientoRealizado = true;
                 }
             }
-
         }
-
-
         return movimientoRealizado;
     }
-
 
     /**
      * Tomar la carta de Tableau y colocarla en el Foundation.
@@ -123,6 +216,7 @@ public class SolitaireGame {
         }
         return movimientoRealizado;
     }
+
     /**
      * Tomar la carta de Waste y colocarla en el Tableau.
      *
@@ -261,5 +355,4 @@ public class SolitaireGame {
     public ArrayList<FoundationDeck> getFoundations() {
         return foundation;
     }
-
 }

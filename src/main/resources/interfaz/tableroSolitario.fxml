@@ -45,6 +45,16 @@
                 </Label>
 
                 <Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnUndo" mnemonicParsing="false" onAction="#handleUndo" prefHeight="40.0" prefWidth="100.0"
+                        style="-fx-background-color: linear-gradient(to bottom, #9C27B0, #7B1FA2);
+                               -fx-text-fill: white;
+                               -fx-background-radius: 8;
+                               -fx-border-radius: 8;
+                               -fx-font-weight: bold;" text="↶ Undo">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
 
                 <Button fx:id="btnNuevoJuego" mnemonicParsing="false" onAction="#handleNuevoJuego" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: linear-gradient(to bottom, #4CAF50, #45a049);                                -fx-text-fill: white;                                -fx-background-radius: 8;                                -fx-border-radius: 8;                                -fx-font-weight: bold;" text="Nuevo Juego">
                <font>
