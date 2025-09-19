@@ -87,13 +87,21 @@ public class SolitaireGame {
 
         // Restaurar draw pile
         drawPile = new DrawPile();
-        // Limpiar draw pile actual
+        // Limpiar draw pile actual completamente
         while (drawPile.hayCartas()) {
             drawPile.getCartas(1);
         }
-        // Recargar con las cartas del estado
-        if (!estado.getDrawPileState().isEmpty()) {
-            drawPile.recargar(new ArrayList<>(estado.getDrawPileState()));
+        // Recargar SOLO si hay cartas en el estado
+        ArrayList<CartaInglesa> drawPileCartas = estado.getDrawPileState();
+        if (!drawPileCartas.isEmpty()) {
+            // Crear nuevas copias de las cartas para evitar referencias compartidas
+            ArrayList<CartaInglesa> cartasParaRecargar = new ArrayList<>();
+            for (CartaInglesa carta : drawPileCartas) {
+                CartaInglesa nuevaCarta = new CartaInglesa(carta.getValor(), carta.getPalo(), carta.getColor());
+                nuevaCarta.makeFaceDown();
+                cartasParaRecargar.add(nuevaCarta);
+            }
+            drawPile.recargar(cartasParaRecargar);
         }
 
         // Restaurar waste pile
