@@ -61,19 +61,25 @@ public class GameState {
             state.foundationStates.add(foundationCopy);
         }
 
+        // CORRECCIÓN: Copiar draw pile sin modificar el original
         DrawPile drawPile = game.getDrawPile();
         ArrayList<CartaInglesa> drawCards = new ArrayList<>();
+
+        // Extraer todas las cartas para copiarlas
         while (drawPile.hayCartas()) {
             drawCards.add(0, drawPile.getCartas(1).get(0)); // Insertar al inicio
         }
+
+        // Copiar las cartas para el estado
         for (CartaInglesa carta : drawCards) {
             CartaInglesa cartaCopy = new CartaInglesa(carta.getValor(), carta.getPalo(), carta.getColor());
             cartaCopy.makeFaceDown();
             state.drawPileState.add(cartaCopy);
         }
-        // Restaurar draw pile original
-        for (int i = drawCards.size() - 1; i >= 0; i--) {
-            // Recrear draw pile con las cartas originales
+
+        // IMPORTANTE: Restaurar el draw pile original
+        if (!drawCards.isEmpty()) {
+            drawPile.recargar(drawCards);
         }
 
         // Copiar waste pile
