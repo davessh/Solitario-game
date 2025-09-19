@@ -28,6 +28,8 @@ public class SolitaireJuegoController {
     @FXML
     private Button btnMenu;
     @FXML
+    private Button btnUndo; // Nuevo botón Undo
+    @FXML
     private Pane drawPilePane;
     @FXML
     private Pane wastePilePane;
@@ -90,10 +92,9 @@ public class SolitaireJuegoController {
         foundationPanes.add(foundationSpades);
 
         configurarEventos();
-
         inicializarTimer();
-
         actualizarInterfaz();
+        actualizarBotonUndo();
     }
 
     private void inicializarTimer() {
@@ -117,6 +118,7 @@ public class SolitaireJuegoController {
         }
         inicializarTimer();
         actualizarInterfaz();
+        actualizarBotonUndo();
         lblEstado.setText("Nuevo juego iniciado");
         lblMovimientos.setText("Movimientos: 0");
     }
@@ -142,7 +144,26 @@ public class SolitaireJuegoController {
     }
 
     @FXML
+    private void handleUndo() {
+        if (solitaireGame.puedeDeshacer()) {
+            int movimientosAnteriores = solitaireGame.deshacerMovimiento();
+            if (movimientosAnteriores != -1) {
+                movimientos = movimientosAnteriores;
+                actualizarInterfaz();
+                actualizarBotonUndo();
+                lblMovimientos.setText("Movimientos: " + movimientos);
+                lblEstado.setText("Movimiento deshecho");
+            }
+        } else {
+            lblEstado.setText("No hay movimientos para deshacer");
+        }
+    }
+
+    @FXML
     private void handleDrawPileClick() {
+        // Guardar estado antes del movimiento
+        solitaireGame.guardarEstadoActual(movimientos);
+
         if (solitaireGame.getDrawPile().hayCartas()) {
             solitaireGame.drawCards();
         } else {
@@ -150,7 +171,14 @@ public class SolitaireJuegoController {
         }
         movimientos++;
         actualizarInterfaz();
+        actualizarBotonUndo();
         lblMovimientos.setText("Movimientos: " + movimientos);
+    }
+
+    private void actualizarBotonUndo() {
+        if (btnUndo != null) {
+            btnUndo.setDisable(!solitaireGame.puedeDeshacer());
+        }
     }
 
     private void configurarEventos() {
@@ -204,6 +232,9 @@ public class SolitaireJuegoController {
             boolean success = false;
 
             if (db.hasString()) {
+                // Guardar estado antes del movimiento
+                solitaireGame.guardarEstadoActual(movimientos);
+
                 String source = db.getString();
                 if (source.equals("waste")) {
                     success = solitaireGame.moveWasteToTableau(index + 1);
@@ -216,6 +247,7 @@ public class SolitaireJuegoController {
                 if (success) {
                     movimientos++;
                     actualizarInterfaz();
+                    actualizarBotonUndo();
                     lblMovimientos.setText("Movimientos: " + movimientos);
                 }
             }
@@ -256,6 +288,9 @@ public class SolitaireJuegoController {
             boolean success = false;
 
             if (db.hasString()) {
+                // Guardar estado antes del movimiento
+                solitaireGame.guardarEstadoActual(movimientos);
+
                 String source = db.getString();
                 if (source.equals("waste")) {
                     success = solitaireGame.moveWasteToFoundation();
@@ -268,6 +303,7 @@ public class SolitaireJuegoController {
                 if (success) {
                     movimientos++;
                     actualizarInterfaz();
+                    actualizarBotonUndo();
                     lblMovimientos.setText("Movimientos: " + movimientos);
                     verificarVictoria();
                 }
@@ -303,9 +339,9 @@ public class SolitaireJuegoController {
 
         if (solitaireGame.getDrawPile().hayCartas()) {
             Label cartaLabel = new Label("🂠");
-            cartaLabel.setStyle("-fx-font-size: 120px; -fx-text-fill: #4169E1; -fx-alignment: center;"); // Aumenta el tamaño aquí
-            cartaLabel.setLayoutX(10); // ajustar x position
-            cartaLabel.setLayoutY(-15); // ajustar y position
+            cartaLabel.setStyle("-fx-font-size: 120px; -fx-text-fill: #4169E1; -fx-alignment: center;");
+            cartaLabel.setLayoutX(10);
+            cartaLabel.setLayoutY(-15);
             drawPilePane.getChildren().add(cartaLabel);
         } else {
             Label recargaLabel = new Label("↻");
@@ -499,10 +535,10 @@ public class SolitaireJuegoController {
 
     private Label crearLabelCartaReverso() {
         Label label = new Label("🂠");
-        label.setStyle("-fx-font-size: 48px; -fx-text-fill: #4169E1; -fx-background-color: #4169E1; " +  // Aumentado de 40px a 48px
-                "-fx-border-color: #000080; -fx-border-width: 2; -fx-padding: 8 12; " +  // Aumentado padding
+        label.setStyle("-fx-font-size: 48px; -fx-text-fill: #4169E1; -fx-background-color: #4169E1; " +
+                "-fx-border-color: #000080; -fx-border-width: 2; -fx-padding: 8 12; " +
                 "-fx-background-radius: 10; -fx-border-radius: 10; " +
-                "-fx-min-width: 80; -fx-min-height: 110; -fx-alignment: center; " +  // Aumentado tamaño
+                "-fx-min-width: 80; -fx-min-height: 110; -fx-alignment: center; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0.5, 1, 1);");
         return label;
     }
